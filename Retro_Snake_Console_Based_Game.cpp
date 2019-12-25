@@ -4,6 +4,7 @@
 // Going to update this repo, adding more things to it.
 // Like varying speed, scores, gameover and game start screen.
 // Thank you! Giving credit is appreciated. :)
+// Current version. 26 Dec 2019 (v1.1)
 
 #include<iostream>
 #include<windows.h>
@@ -15,11 +16,18 @@ using namespace std;
 //Predefined canvas size.
 const int H_size = 20;
 const int W_size = 40;
+//Waiting time in millisec for every update.
+float defautWaitTime = 50;
+
+//----------------------------
 int x_dir = 1, y_dir = 0; //X = 1 for Right and -1 for Left.  Y = 1 for Down and -1 for Up.
 int tail_pos[50][2] = {}; //[size of tail] [0--> x_Position, 1--> y_Position]
 int food_pos[2]={}; //food spawn position.[0--> x_Position, 1--> y_Position]
 int size = 3; //Tail size
 bool gameOver = false;
+float varingWaitTime = defautWaitTime;
+//----------------------------
+
 
 //Function to Show/Hide console cursor. Used it for hiding blinking cursor.
 void ShowConsoleCursor(bool showFlag)
@@ -137,6 +145,12 @@ void Input()  //Keyboard input function.
       default:
           break;
     }
+
+    //Decrese speed by half while traveling y dir. And back to normal when x.
+    if(x_dir==0 && varingWaitTime==defautWaitTime) //check if traveling in y
+      varingWaitTime = defautWaitTime*2; //Increase wait time because y cell distance is also double of x cell. So, that speed remain constant.
+    else if(y_dir==0 && varingWaitTime==(defautWaitTime*2)) //check if traveling in x
+      varingWaitTime = defautWaitTime;
   }
 }
 
@@ -153,8 +167,7 @@ int main()
       Input(); //Get key pressed input.
       Update(); //Update grid as per game.
     }
-    Sleep(150); //Waiting time in millisec for every update.
-    //You can change it, to control speed of game.
+    Sleep((int)varingWaitTime);
   }
   return 0;
 }
