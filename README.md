@@ -1,4 +1,4 @@
-# C++ Retro_Snake_Console_Based_Game
+# C++ ASCII Retro Snake Game
 Made this project in my freshman year, all on my own. Learned a lot about C++ and logical thinking.
 
 Spent 2-3 hrs making snake game with C++, without any game engine and without any tutorials. Fully on my own. This is my first console based game. 🤪
