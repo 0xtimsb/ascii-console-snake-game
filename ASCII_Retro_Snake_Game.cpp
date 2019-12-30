@@ -1,31 +1,35 @@
 // Open-source snake project made by Smit Barmase (@smitbarmase). CS Freshman.
 // 24 Dec 2019. (v1.0)
 // Learn. Modify. Share.
-// Going to update this repo, adding more things to it.
-// Like varying speed, scores, gameover and game start screen.
+// I will keep updating this repo, adding more things to it.
+// Like scores, gameover and game start screen.
 // Thank you! Giving credit is appreciated. :)
-// Current version. 26 Dec 2019 (v1.1)
+// Current version. 30 Dec 2019 (v1.2)
 
 #include<iostream>
-#include<windows.h>
-#include<stdlib.h>
-#include<conio.h>
-#include<time.h>
+#include<windows.h> //For cursor info
+#include<conio.h> //For get keyboard hit
+#include<chrono> //For clock
 using namespace std;
+using namespace std::chrono;
 
-//Predefined canvas size.
-const int H_size = 20;
-const int W_size = 40;
-//Waiting time in millisec for every update.
-float defautWaitTime = 50;
+//Game setting data
+//--------------------------
+  const int H_size = 20; //Predefined canvas size.
+  const int W_size = 40;
+  const int maxSize = 50; //Max tail size
+  int size = 3; //Start tail size
+  float defautWaitTime = 0.15;   //Waiting time in sec for every snake step.
+//---------------------------
 
-//----------------------------
+//Private data no need to change.
+//---------------------------
+high_resolution_clock::time_point t1, t2; //For keeping track of time duration
 int x_dir = 1, y_dir = 0; //X = 1 for Right and -1 for Left.  Y = 1 for Down and -1 for Up.
-int tail_pos[50][2] = {}; //[size of tail] [0--> x_Position, 1--> y_Position]
+int tail_pos[maxSize][2] = {}; //[size of tail] [0--> x_Position, 1--> y_Position]
 int food_pos[2]={}; //food spawn position.[0--> x_Position, 1--> y_Position]
-int size = 3; //Tail size
+float varingWaitTime = defautWaitTime; //Varying time for vertical axis.
 bool gameOver = false;
-float varingWaitTime = defautWaitTime;
 //----------------------------
 
 
@@ -46,6 +50,17 @@ void setCursorPosition(int x, int y)
     cout.flush();
     COORD coord = { (SHORT)x, (SHORT)y };
     SetConsoleCursorPosition(out, coord);
+}
+
+void GenerateFood()  //Function to spawn food at random position inside canvas.
+{
+  srand(time(0)); // Random seed value for rand based on time
+  food_pos[0] = (rand() % (W_size-1));
+  food_pos[0]==0 ? food_pos[0]+=1 : NULL; //If food coincide wall.
+  food_pos[1] = (rand() % (H_size-1));
+  food_pos[1]==0 ? food_pos[1]+=1 : NULL; //If food coincide wall.
+  setCursorPosition(food_pos[0],food_pos[1]);
+  cout<<"*";
 }
 
 void Start()
@@ -77,18 +92,7 @@ void Start()
   }
 }
 
-void GenerateFood()  //Function to spawn food at random position inside canvas.
-{
-  srand(time(0)); // Random seed value for rand based on time
-  food_pos[0] = (rand() % (W_size-1));
-  food_pos[0]==0 ? food_pos[0]+=1 : NULL; //If food coincide wall.
-  food_pos[1] = (rand() % (H_size-1));
-  food_pos[1]==0 ? food_pos[1]+=1 : NULL; //If food coincide wall.
-  setCursorPosition(food_pos[0],food_pos[1]);
-  cout<<"*";
-}
-
-void Update()
+void UpdateState()
 {
   //Remove previous printed last part of tail.
   if(tail_pos[size-1][0]!=0 || tail_pos[size-1][1]!=0)
@@ -128,19 +132,20 @@ void Update()
   }
 }
 
-void Input()  //Keyboard input function.
+void CheckInput()  //Keyboard input function.
 {
   if(_kbhit())
   {
     switch(_getch())
     {
-      case 72: x_dir = 0; y_dir = -1; //72 Up Arrow
+      //If conditions to stop, backward inputs.
+      case 72: if(y_dir!=1){x_dir = 0; y_dir = -1;} //72 Up Arrow
           break;
-      case 75: x_dir = -1; y_dir = 0; //68 Left Arrow
+      case 75: if(x_dir!=1){x_dir = -1; y_dir = 0;} //68 Left Arrow
           break;
-      case 77: x_dir = 1; y_dir = 0;  //67 Right Arrow
+      case 77: if(x_dir!=-1){x_dir = 1; y_dir = 0;}  //67 Right Arrow
           break;
-      case 80: x_dir = 0; y_dir = 1;  //80 Down Arrow
+      case 80: if(y_dir!=-1){x_dir = 0; y_dir = 1;}  //80 Down Arrow
           break;
       default:
           break;
@@ -159,15 +164,23 @@ int main()
   ShowConsoleCursor(false);  //Hide cursor.
   Start();
   GenerateFood();  //Generate food for first time.
-  tail_pos[0][0] = 1, tail_pos[0][1] = 1;  //Snake head start point.
-  while(true) //Loop until game over.
+  tail_pos[0][0] = 1, tail_pos[0][1] = 1;  //Snake head start point
+
+  t1 = high_resolution_clock::now();
+  t2 = {};
+
+  while (gameOver==false)
   {
-    if(gameOver==false)
+    CheckInput(); //Runs every time frame.
+
+    t2 = high_resolution_clock::now();
+    if(duration_cast<duration<float>>(t2 - t1).count()>=varingWaitTime)
     {
-      Input(); //Get key pressed input.
-      Update(); //Update grid as per game.
+      UpdateState();  //Runs every defautWaitTime.
+      t1 = high_resolution_clock::now();
+      t2 = {};
     }
-    Sleep((int)varingWaitTime);
+
   }
   return 0;
 }
