@@ -18,8 +18,9 @@ using namespace std::chrono;
   const int H_size = 20; //Predefined canvas size.
   const int W_size = 40;
   const int maxSize = 50; //Max tail size
+  const float defautWaitTime = 0.05;   //Waiting time in sec for every snake step.
   int size = 3; //Start tail size
-  float defautWaitTime = 0.15;   //Waiting time in sec for every snake step.
+
 //---------------------------
 
 //Private data no need to change.
@@ -28,7 +29,7 @@ high_resolution_clock::time_point t1, t2; //For keeping track of time duration
 int x_dir = 1, y_dir = 0; //X = 1 for Right and -1 for Left.  Y = 1 for Down and -1 for Up.
 int tail_pos[maxSize][2] = {}; //[size of tail] [0--> x_Position, 1--> y_Position]
 int food_pos[2]={}; //food spawn position.[0--> x_Position, 1--> y_Position]
-float varingWaitTime = defautWaitTime; //Varying time for vertical axis.
+float waitingTime = defautWaitTime; //Varying time for vertical axis.
 bool gameOver = false;
 //----------------------------
 
@@ -151,11 +152,13 @@ void CheckInput()  //Keyboard input function.
           break;
     }
 
-    //Decrese speed by half while traveling y dir. And back to normal when x.
-    if(x_dir==0 && varingWaitTime==defautWaitTime) //check if traveling in y
-      varingWaitTime = defautWaitTime*2; //Increase wait time because y cell distance is also double of x cell. So, that speed remain constant.
-    else if(y_dir==0 && varingWaitTime==(defautWaitTime*2)) //check if traveling in x
-      varingWaitTime = defautWaitTime;
+    //Increse wait time by x2 while traveling y axis.
+    if(x_dir==0){
+      waitingTime = 2*defautWaitTime;
+    }else if(y_dir==0){
+      waitingTime = defautWaitTime;
+    }
+
   }
 }
 
@@ -173,7 +176,7 @@ int main()
   {
     CheckInput(); //Runs every time frame
     t2 = high_resolution_clock::now();
-    if(duration_cast<duration<float>>(t2 - t1).count()>=varingWaitTime)
+    if(duration_cast<duration<float>>(t2 - t1).count()>=waitingTime)
     {
       UpdateState();  //Runs every defautWaitTime.
       t1 = high_resolution_clock::now();
