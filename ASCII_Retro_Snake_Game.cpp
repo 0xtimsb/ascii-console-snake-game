@@ -171,8 +171,7 @@ int main()
 
   while (gameOver==false)
   {
-    CheckInput(); //Runs every time frame.
-
+    CheckInput(); //Runs every time frame
     t2 = high_resolution_clock::now();
     if(duration_cast<duration<float>>(t2 - t1).count()>=varingWaitTime)
     {
@@ -180,7 +179,6 @@ int main()
       t1 = high_resolution_clock::now();
       t2 = {};
     }
-
   }
   return 0;
 }
