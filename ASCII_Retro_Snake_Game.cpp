@@ -4,7 +4,7 @@
 // I will keep updating this repo, adding more things to it.
 // Like scores, gameover and game start screen.
 // Thank you! Giving credit is appreciated. :)
-// Current version. 30 Dec 2019 (v1.2)
+// Current version. 30 Dec 2019 (v1.2.1)
 
 #include<iostream>
 #include<windows.h> //For cursor info
