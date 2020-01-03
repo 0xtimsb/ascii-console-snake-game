@@ -243,7 +243,11 @@ int main()
 
     //Display score panel.
     setCursorPosition(W_size+3,(H_size/2)); //Align string in center-right.
+<<<<<<< HEAD
     cout<<"Score : 0    "; //Spaces to clear everything.
+=======
+    cout<<"Score : 0              "; //Spaces to clear everything.
+>>>>>>> f4889ee96810fb568e34cd5e8b451487aaf8b0fb
 
     //Clearing existing snake.
     for(int i=size;i>0;i--)
