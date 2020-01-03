@@ -2,9 +2,8 @@
 // 24 Dec 2019. (v1.0)
 // Learn. Modify. Share.
 // I will keep updating this repo, adding more things to it.
-// Like scores, colors.
 // Thank you! Giving credit is appreciated. :)
-// Current version. 3 Jan 2019 (v1.3)
+// Current version. 3 Jan 2019 (v1.4)
 
 #include<iostream>
 #include<windows.h> //For cursor info
@@ -35,6 +34,7 @@ int food_pos[2]; //food spawn position.[0--> x_Position, 1--> y_Position]
 int size = startSize;
 float waitingTime = defautWaitTime; //Varying time for vertical axis.
 bool gameOver = false;
+int score = 0;
 //----------------------------
 
 //Function to Show/Hide console cursor. Used it for hiding blinking cursor.
@@ -119,6 +119,10 @@ void MakeCanvas()
       }
     }
   }
+
+  //Make Score panel.
+  setCursorPosition(W_size+3,(H_size/2)); //Align string in center-right.
+  cout<<"Score : "<<score;
 }
 
 void UpdateState()
@@ -154,15 +158,18 @@ void UpdateState()
 
     //Set coursor to new head position.
     setCursorPosition(tail_pos[0][0],tail_pos[0][1]);
-    //Print head.
-    cout<<"o";
     //Generate food at random point of grid if head ate food.
     if(tail_pos[0][0]==food_pos[0] && tail_pos[0][1]==food_pos[1])
     {
       GenerateFood();
       size++;
+
+      score += 10; //Increase score here.
+
+      //Display score panel.
+      setCursorPosition(W_size+3,(H_size/2)); //Align string in center-right.
+      cout<<"Score : "<<score;
     }
-    //score += 10; //Increase score here.
     cout.flush();
   }
   else
@@ -229,6 +236,13 @@ int main()
     }
 
     //Game Over >>>
+    //Score.
+    score = 0; //Resetting score.
+
+    //Display score panel.
+    setCursorPosition(W_size+3,(H_size/2)); //Align string in center-right.
+    cout<<"Score : 0              "; //Spaces to clear everything.
+
     //Clearing existing snake.
     for(int i=size;i>0;i--)
     {
